@@ -27,12 +27,15 @@
     const t0 = audioCtx.currentTime;
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
-    o.type = type; o.frequency.setValueAtTime(freq, t0);
+    o.type = type; 
+    o.frequency.setValueAtTime(freq, t0);
     g.gain.setValueAtTime(0, t0);
     g.gain.linearRampToValueAtTime(vol, t0 + 0.01);
     g.gain.linearRampToValueAtTime(0, t0 + dur);
-    o.connect(g); g.connect(audioCtx.destination);
-    o.start(t0); o.stop(t0 + dur + 0.02);
+    o.connect(g); 
+    g.connect(audioCtx.destination);
+    o.start(t0); 
+    o.stop(t0 + dur + 0.02);
   }
   function jingle() {
     const notes = [659, 784, 988, 784, 880];
@@ -363,42 +366,41 @@
     fillRoundRect(px - 18, py + 10, 12, 14, 5, "#60a5fa");
   }
 
-  // ✅ Car wheels “show through” body via wheel-wells (cutouts + wheels)
   function drawObstacle(o) {
-  const x = o.x, y = o.y, w = o.w, h = o.h;
+    const x = o.x, y = o.y, w = o.w, h = o.h;
 
-  // Car body (rounded rectangle)
-  fillRoundRect(x, y, w, h, 10, o.color);
+    // Car body (rounded rectangle)
+    fillRoundRect(x, y, w, h, 10, o.color);
 
-  // Windows
-  fillRoundRect(x + 7, y + 12, w - 14, 18, 8, "rgba(255,255,255,0.70)");
+    // Windows
+    fillRoundRect(x + 7, y + 12, w - 14, 18, 8, "rgba(255,255,255,0.70)");
 
-  // Bumpers (simple detail, kid-friendly)
-  ctx.fillStyle = "rgba(0,0,0,0.18)";
-  ctx.fillRect(x + 8, y + 5,  w - 16, 4);
-  ctx.fillRect(x + 8, y + h - 9, w - 16, 4);
+    // Bumpers (simple detail, kid-friendly)
+    ctx.fillStyle = "rgba(0,0,0,0.18)";
+    ctx.fillRect(x + 8, y + 5,  w - 16, 4);
+    ctx.fillRect(x + 8, y + h - 9, w - 16, 4);
 
-  // Optional: tiny headlights/taillights (still no wheels)
-  ctx.fillStyle = "rgba(255,255,255,0.55)";
-  ctx.fillRect(x + 6, y + 8, 6, 8);
-  ctx.fillRect(x + w - 12, y + 8, 6, 8);
+    // Tiny headlights/taillights
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    ctx.fillRect(x + 6, y + 8, 6, 8);
+    ctx.fillRect(x + w - 12, y + 8, 6, 8);
 
-  // Police extras stay (lights + badge) — still no wheels
-  if (o.type === "police") {
-    o.flash += 0.28;
-    const on = Math.sin(o.flash) > 0;
+    // Police extras stay (lights + badge)
+    if (o.type === "police") {
+      o.flash += 0.28;
+      const on = Math.sin(o.flash) > 0;
 
-    // Flashing light bar
-    ctx.fillStyle = on ? "#ff2d2d" : "#2d7bff";
-    ctx.fillRect(x + w/2 - 10, y + 2, 20, 8);
+      // Flashing light bar
+      ctx.fillStyle = on ? "#ff2d2d" : "#2d7bff";
+      ctx.fillRect(x + w/2 - 10, y + 2, 20, 8);
 
-    // Badge dot
-    ctx.fillStyle = "#ffd166";
-    ctx.beginPath();
-    ctx.arc(x + w/2, y + h/2 + 10, 5, 0, Math.PI * 2);
-    ctx.fill();
+      // Badge dot
+      ctx.fillStyle = "#ffd166";
+      ctx.beginPath();
+      ctx.arc(x + w/2, y + h/2 + 10, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
   }
-}
 
   function drawOverlayText(lines, sublines=[]) {
     ctx.fillStyle = "rgba(0,0,0,0.35)";
@@ -670,7 +672,7 @@
     for (const o of obstacles) {
       const ob = { x:o.x+6, y:o.y+8, w:o.w-12, h:o.h-16 };
       if (rectsOverlap(hitbox, ob)) {
-        gameOver(o.type === "police" ? "police" : "car");
+        gameOver(o.type);
         break;
       }
     }
