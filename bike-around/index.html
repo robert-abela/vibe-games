@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lane Changer – Kid Friendly (4 lanes)</title>
+  <style>
+    :root { --bg:#cfefff; --road:#3a3a3a; --stripe:#f2f2f2; --grass:#6fd36f; }
+    body {
+      margin: 0; background: var(--bg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      display: grid; place-items: center; height: 100vh;
+    }
+    .wrap { width: min(540px, 96vw); }
+    canvas {
+      width: 100%; height: auto; aspect-ratio: 3/4; background: var(--bg);
+      border-radius: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.18);
+      display:block;
+    }
+    .hud {
+      margin-top: 10px; display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+      font-weight: 800;
+    }
+    .pill {
+      background: rgba(255,255,255,.82); padding: 8px 12px; border-radius: 999px;
+      box-shadow: 0 6px 16px rgba(0,0,0,.08);
+    }
+    button {
+      border: 0; padding: 10px 14px; border-radius: 14px; font-weight: 900; cursor:pointer;
+      background: #ffcc4d; box-shadow: 0 6px 16px rgba(0,0,0,.15);
+    }
+    button:active { transform: translateY(1px); }
+    .small { font-weight:700; opacity:.85; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <canvas id="game" width="480" height="640" aria-label="Lane Changer Game"></canvas>
+    <div class="hud">
+      <div class="pill" id="levelPill">Level 1</div>
+      <div class="pill" id="goalPill">Goal: Anne</div>
+      <div class="pill" id="distancePill">0%</div>
+      <button id="startBtn">Start</button>
+      <div class="pill small">⬅️ ➡️ [Space]</div>
+    </div>
+  </div>
+
+  <script src="js/game.js"></script>
+
+</body>
+</html>
