@@ -16,11 +16,14 @@
   // ---------- Sound (WebAudio) ----------
   let audioCtx = null;
   function ensureAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === "suspended") audioCtx.resume();
+    if (!audioCtx) 
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") 
+      audioCtx.resume();
   }
   function beep(freq=440, dur=0.08, type="sine", vol=0.06) {
-    if (!audioCtx || audioCtx.state !== "running") return;
+    if (!audioCtx || audioCtx.state !== "running") 
+      return;
     const t0 = audioCtx.currentTime;
     const o = audioCtx.createOscillator();
     const g = audioCtx.createGain();
@@ -86,11 +89,10 @@
     return road.x + laneW * (laneIndex + 0.5);
   }
 
-  // 5× longer levels
   const levels = [
     { name: "Level 1", goal: "Anne",     exitSide: "right", baseSpeed: 220, distanceTarget: 1200*5, carEvery: 900, policeChance: 0.10, greetSeconds: 6.5 },
     { name: "Level 2", goal: "Marianne", exitSide: "left",  baseSpeed: 240, distanceTarget: 1400*5, carEvery: 850, policeChance: 0.13, greetSeconds: 7.0 },
-    { name: "Level 3", goal: "Home",             exitSide: "right", baseSpeed: 260, distanceTarget: 1600*5, carEvery: 820, policeChance: 0.16, greetSeconds: 5.0 },
+    { name: "Level 3", goal: "Home",     exitSide: "right", baseSpeed: 260, distanceTarget: 1600*5, carEvery: 820, policeChance: 0.16, greetSeconds: 5.0 },
   ];
 
   // ---------- State ----------
@@ -363,40 +365,40 @@
 
   // ✅ Car wheels “show through” body via wheel-wells (cutouts + wheels)
   function drawObstacle(o) {
-    const x = o.x, y = o.y, w = o.w, h = o.h;
+  const x = o.x, y = o.y, w = o.w, h = o.h;
 
-    // Car body (rounded rectangle)
-    fillRoundRect(x, y, w, h, 10, o.color);
+  // Car body (rounded rectangle)
+  fillRoundRect(x, y, w, h, 10, o.color);
 
-    // Windows
-    fillRoundRect(x + 7, y + 12, w - 14, 18, 8, "rgba(255,255,255,0.70)");
+  // Windows
+  fillRoundRect(x + 7, y + 12, w - 14, 18, 8, "rgba(255,255,255,0.70)");
 
-    // Bumpers (simple detail, kid-friendly)
-    ctx.fillStyle = "rgba(0,0,0,0.18)";
-    ctx.fillRect(x + 8, y + 5,  w - 16, 4);
-    ctx.fillRect(x + 8, y + h - 9, w - 16, 4);
+  // Bumpers (simple detail, kid-friendly)
+  ctx.fillStyle = "rgba(0,0,0,0.18)";
+  ctx.fillRect(x + 8, y + 5,  w - 16, 4);
+  ctx.fillRect(x + 8, y + h - 9, w - 16, 4);
 
-    // Optional: tiny headlights/taillights (still no wheels)
-    ctx.fillStyle = "rgba(255,255,255,0.55)";
-    ctx.fillRect(x + 6, y + 8, 6, 8);
-    ctx.fillRect(x + w - 12, y + 8, 6, 8);
+  // Optional: tiny headlights/taillights (still no wheels)
+  ctx.fillStyle = "rgba(255,255,255,0.55)";
+  ctx.fillRect(x + 6, y + 8, 6, 8);
+  ctx.fillRect(x + w - 12, y + 8, 6, 8);
 
-    // Police extras stay (lights + badge) — still no wheels
-    if (o.type === "police") {
-      o.flash += 0.28;
-      const on = Math.sin(o.flash) > 0;
+  // Police extras stay (lights + badge) — still no wheels
+  if (o.type === "police") {
+    o.flash += 0.28;
+    const on = Math.sin(o.flash) > 0;
 
-      // Flashing light bar
-      ctx.fillStyle = on ? "#ff2d2d" : "#2d7bff";
-      ctx.fillRect(x + w/2 - 10, y + 2, 20, 8);
+    // Flashing light bar
+    ctx.fillStyle = on ? "#ff2d2d" : "#2d7bff";
+    ctx.fillRect(x + w/2 - 10, y + 2, 20, 8);
 
-      // Badge dot
-      ctx.fillStyle = "#ffd166";
-      ctx.beginPath();
-      ctx.arc(x + w/2, y + h/2 + 10, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
+    // Badge dot
+    ctx.fillStyle = "#ffd166";
+    ctx.beginPath();
+    ctx.arc(x + w/2, y + h/2 + 10, 5, 0, Math.PI * 2);
+    ctx.fill();
   }
+}
 
   function drawOverlayText(lines, sublines=[]) {
     ctx.fillStyle = "rgba(0,0,0,0.35)";
@@ -567,20 +569,23 @@
       drawRoad(lvl, 140, dt);
       drawPlayer();
       drawOverlayText(
-        ["Bike Around", "Visit your grandmas!"],
-        ["Use ⬅️ ➡️ to change lanes", "Avoid hitting cars & police", "Take Exits to visit GrandMas!"]
+        ["Bike Around", "Visit your GrandMa!"],
+        ["Avoid hitting cars & police", "Take the exits to visit GrandMas", " ", "Use ⬅️ ➡️ to change lanes", "Use [Space] to start"]
       );
       requestAnimationFrame(tick);
+      return;
     }
-    else if (state === "greet") {
+
+    if (state === "greet") {
       stopSiren();
       greetElapsed += dt;
       drawGreeting(lvl, greetElapsed);
-      if (greetElapsed >= lvl.greetSeconds) 
-        advanceAfterGreet();
+      if (greetElapsed >= lvl.greetSeconds) advanceAfterGreet();
       requestAnimationFrame(tick);
+      return;
     }
-    else if (state === "gameover") {
+
+    if (state === "gameover") {
       drawBackground();
       drawRoad(lvl, 140, dt);
       obstacles.forEach(drawObstacle);
@@ -590,12 +595,11 @@
       const crashSub   = (lastCrashType === "police") ? "Jail time (game over)" : "Ambulance is here!";
       drawOverlayText(["Oh no!", crashTitle], ["Click Start to try again", crashSub]);
 
-      if (lastCrashType === "police") 
-        drawJail(W/2 - 90, 360);
-      else 
-        drawAmbulance(W/2 - 85, 390);
+      if (lastCrashType === "police") drawJail(W/2 - 90, 360);
+      else drawAmbulance(W/2 - 85, 390);
 
       requestAnimationFrame(tick);
+      return;
     }
 
     // ---------- Playing ----------
@@ -604,16 +608,14 @@
     distancePill.textContent = clamp(pct, 0, 100) + "%";
 
     const exitStartsAt = lvl.distanceTarget - 420;
-    if (distance >= exitStartsAt) 
-      exitActive = true;
-
-    if (missedExitMessageTimer > 0) {
-      missedExitMessageTimer -= dt;
-      if (missedExitMessageTimer <= 0) {
-        missedExitMessageTimer = 0;
-        missedExitLatched = false;  // ✅ unlock once message duration ends
-      }
-    }
+    if (distance >= exitStartsAt) exitActive = true;
+if (missedExitMessageTimer > 0) {
+  missedExitMessageTimer -= dt;
+  if (missedExitMessageTimer <= 0) {
+    missedExitMessageTimer = 0;
+    missedExitLatched = false;  // ✅ unlock once message duration ends
+  }
+}
     // lane change (kid-friendly cooldown)
     player.cooldown -= dt;
     if (player.cooldown < 0) player.cooldown = 0;
@@ -687,21 +689,21 @@
       const laneW = road.w / LANES;
       ctx.fillRect(road.x + laneW*requiredLane, 0, laneW, 260);
 
-      if (distance >= lvl.distanceTarget) {
-        if (player.lane === requiredLane) {
-          nextLevelOrWin();
-        } else {
-          // ✅ Exit was truly missed (finish line reached in wrong lane)
-          missedExitLatched = true;
-          missedExitMessageTimer = 1.8;
+if (distance >= lvl.distanceTarget) {
+  if (player.lane === requiredLane) {
+    nextLevelOrWin();
+  } else {
+    // ✅ Exit was truly missed (finish line reached in wrong lane)
+    missedExitLatched = true;
+    missedExitMessageTimer = 1.8;
 
-          // Friendly rewind so they can try again
-          distance = exitStartsAt - 120;
+    // Friendly rewind so they can try again
+    distance = exitStartsAt - 120;
 
-          beep(330, 0.10, "sine", 0.05);
-          beep(280, 0.12, "sine", 0.05);
-        }
-      }
+    beep(330, 0.10, "sine", 0.05);
+    beep(280, 0.12, "sine", 0.05);
+  }
+}
 
       if (missedExitLatched && missedExitMessageTimer > 0) {
         ctx.fillStyle = "rgba(0,0,0,0.45)";
@@ -720,10 +722,16 @@
   // ---------- Start ----------
   startBtn.addEventListener("click", () => {
     ensureAudio();
-    if (state === "gameover") 
+    if (state === "playing") 
+      return;
+    if (state === "gameover") { 
       resetLevel(levelIndex, true); 
-    else if (state === "title") 
+      return; 
+    }
+    if (state === "title") { 
       resetLevel(0, false); 
+      return; 
+    }
   });
 
   canvas.addEventListener("pointerdown", () => {
