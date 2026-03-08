@@ -451,27 +451,22 @@
   }
 
   function drawJail(x, y) {
-    fillRoundRect(x, y, 180, 160, 16, "rgba(148,163,184,0.95)");
-    ctx.fillStyle = "rgba(71,85,105,0.95)";
-    ctx.beginPath();
-    ctx.moveTo(x+18, y+20);
-    ctx.lineTo(x+90, y-18);
-    ctx.lineTo(x+162, y+20);
-    ctx.closePath();
-    ctx.fill();
-    fillRoundRect(x+72, y+86, 36, 60, 10, "rgba(51,65,85,0.95)");
-    fillRoundRect(x+32, y+60, 44, 30, 8, "rgba(203,213,225,0.95)");
+    fillRoundRect(x, y, 180, 160, 16, "rgba(148,163,184,0.95)"); //building
+    fillRoundRect(x+112, y+86, 36, 70, 10, "rgba(51,65,85,0.95)"); //door
+    fillRoundRect(x+32, y+60, 44, 30, 8, "rgba(203,213,225,0.95)"); //window
+    //bars
     ctx.strokeStyle = "rgba(30,41,59,0.95)";
     ctx.lineWidth = 3;
     for (let i=0;i<5;i++) {
       const xx = x+38+i*8;
       ctx.beginPath(); ctx.moveTo(xx, y+62); ctx.lineTo(xx, y+88); ctx.stroke();
     }
-    fillRoundRect(x+52, y+30, 76, 22, 8, "rgba(15,23,42,0.95)");
+    //JAIL sign
+    fillRoundRect(x+52, y+20, 76, 22, 8, "rgba(15,23,42,0.95)");
     ctx.fillStyle = "#fff";
     ctx.font = "900 14px system-ui";
     ctx.textAlign = "center";
-    ctx.fillText("JAIL", x+90, y+46);
+    ctx.fillText("JAIL", x+90, y+36);
     ctx.textAlign = "start";
   }
 
