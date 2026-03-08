@@ -48,9 +48,11 @@
   // Continuous siren while police present
   const siren = { osc:null, gain:null, on:false, t:0 };
   function startSiren() {
-    if (!audioCtx || audioCtx.state !== "running") return;
-    if (siren.on) return;
-    siren.on = true; siren.t = 0;
+    if (!audioCtx || audioCtx.state !== "running" || siren.on) 
+      return;
+
+    siren.on = true; 
+    siren.t = 0;
     siren.osc = audioCtx.createOscillator();
     siren.gain = audioCtx.createGain();
     siren.osc.type = "square";
@@ -61,7 +63,8 @@
     siren.osc.start();
   }
   function stopSiren() {
-    if (!siren.on) return;
+    if (!siren.on) 
+      return;
     siren.on = false;
     if (audioCtx && siren.gain) {
       siren.gain.gain.cancelScheduledValues(audioCtx.currentTime);
@@ -74,7 +77,9 @@
     siren.osc = null; siren.gain = null;
   }
   function updateSiren(dt) {
-    if (!siren.on || !audioCtx || audioCtx.state !== "running" || !siren.osc) return;
+    if (!siren.on || !audioCtx || audioCtx.state !== "running" || !siren.osc) 
+      return;
+
     siren.t += dt;
     const base = 520, span = 260;
     const w = (Math.sin(siren.t * 6.0) + 1) / 2;
@@ -118,36 +123,41 @@
   let spawnTimer = 0;
   let exitActive = false;
   let missedExitMessageTimer = 0;
-  let missedExitLatched = false;   // ✅ only true AFTER the exit is actually missed
+  let missedExitLatched = false;   // only true AFTER the exit is actually missed
   let greetElapsed = 0;
 
   // ---------- Input ----------
   const keys = { left:false, right:false };
   window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") keys.left = true;
-    if (e.key === "ArrowRight") keys.right = true;
+    if (e.key === "ArrowLeft") 
+      keys.left = true;
+    if (e.key === "ArrowRight") 
+      keys.right = true;
 
- // ✅ Space starts/restarts
-  if (e.code === "Space") {
-    e.preventDefault();          // stops page scrolling
-    ensureAudio();               // unlocks sound on first press
-    if (state === "title") {
-      resetLevel(0, false);      // start from level 1
-    } else if (state === "gameover") {
-      resetLevel(levelIndex, true); // restart current level
+    // Space starts/restarts
+    if (e.code === "Space") {
+      e.preventDefault();          // stops page scrolling
+      ensureAudio();               // unlocks sound on first press
+      if (state === "title") {
+        resetLevel(0, false);      // start from level 1
+      } else if (state === "gameover") {
+        resetLevel(levelIndex, true); // restart current level
+      }
     }
-    // (Optional) If you ever add a "paused" state, you can handle it here too.
-  }
 
     if (["ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
   }, { passive:false });
   window.addEventListener("keyup", (e) => {
-    if (e.key === "ArrowLeft") keys.left = false;
-    if (e.key === "ArrowRight") keys.right = false;
+    if (e.key === "ArrowLeft") 
+      keys.left = false;
+    if (e.key === "ArrowRight") 
+      keys.right = false;
   });
 
   // ---------- Helpers ----------
-  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function clamp(v, a, b) { 
+    return Math.max(a, Math.min(b, v)); 
+  }
   function rectsOverlap(a, b) {
     return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   }
@@ -172,7 +182,8 @@
   }
 
   function resetLevel(i, keepLevel=true) {
-    if (!keepLevel) levelIndex = i;
+    if (!keepLevel) 
+      levelIndex = i;
     const lvl = levels[levelIndex];
     state = "playing";
     distance = 0;
@@ -191,7 +202,7 @@
 
     levelPill.textContent = lvl.name;
     goalPill.textContent = "Goal: " + lvl.goal;
-    distancePill.textContent = "0%";
+    distancePill.textContent = "Progress: 0%";
   }
 
   function nextLevelOrWin() {
@@ -202,7 +213,8 @@
 
   function advanceAfterGreet() {
     levelIndex++;
-    if (levelIndex >= levels.length) levelIndex = 0; // loop kid-friendly
+    if (levelIndex >= levels.length) 
+      levelIndex = 0;
     resetLevel(levelIndex, true);
   }
 
@@ -217,10 +229,11 @@
   function spawnObstacle(lvl, speed) {
     let lane = Math.floor(Math.random() * LANES);
     const last = obstacles[obstacles.length - 1];
-    if (last && last.lane === lane && last.y < 150) lane = (lane + 1) % LANES;
+    if (last && last.lane === lane && last.y < 150) 
+      lane = (lane + 1) % LANES;
 
     const isPolice = Math.random() < lvl.policeChance && distance > 260;
-    const w = 46, h = 74; // tiny increase for 4-lane readability
+    const w = 46, h = 74;
 
     obstacles.push({
       type: isPolice ? "police" : "car",
@@ -240,46 +253,44 @@
   function drawBackground() {
     ctx.fillStyle = "#cfefff";
     ctx.fillRect(0,0,W,H);
-
     ctx.fillStyle = "#6fd36f";
     ctx.fillRect(0,0,road.x, H);
     ctx.fillRect(road.x + road.w,0, W-(road.x+road.w), H);
 
     // simple trees
     for (let i=0;i<6;i++) {
-      const x = 20 + (i%2)*55;
-      const y = 40 + i*95;
+      let x = 20 + (i%2)*55;
+      drawTree(x, 0, i);    //left side
+      drawTree(W-x, 20, i); //right side
+    }
+  }
+
+  function drawTree(x, y_offset, i) {
+      const y = y_offset + 40 + i*95;
       ctx.fillStyle = "#2e7d32";
-      ctx.beginPath(); ctx.arc(x,y,18,0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); 
+      ctx.arc(x,y,18,0,Math.PI*2); 
+      ctx.fill();
       ctx.fillStyle = "#8d5a3b";
       ctx.fillRect(x-4,y+14,8,18);
-    }
-    for (let i=0;i<6;i++) {
-      const x = W - (20 + (i%2)*55);
-      const y = 60 + i*95;
-      ctx.fillStyle = "#2e7d32";
-      ctx.beginPath(); ctx.arc(x,y,18,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle = "#8d5a3b";
-      ctx.fillRect(x-4,y+14,8,18);
-    }
   }
 
   function drawRoad(lvl, speed, dt) {
     ctx.fillStyle = ROAD_COLOR;
     ctx.fillRect(road.x, road.y, road.w, road.h);
 
-    // lane separators (4 lanes => 3 separators)
+    // faint lane separators
     const laneW = road.w / LANES;
     ctx.strokeStyle = "rgba(255,255,255,0.35)";
     ctx.lineWidth = 2;
-    for (let i=1;i<LANES;i++) {
+    for (let i=1;i<LANES;i+=2) { //1,3
       ctx.beginPath();
       ctx.moveTo(road.x + laneW*i, 0);
       ctx.lineTo(road.x + laneW*i, H);
       ctx.stroke();
     }
 
-    // center dashes (still nice motion cue)
+    // center dashes
     stripesY += speed * dt;
     stripesY %= 60;
     ctx.fillStyle = "#f2f2f2";
@@ -319,7 +330,7 @@
     }
   }
 
-  // ✅ Bird’s-eye (top-down) rider: round shapes, no phallic silhouette
+  // rider: round shapes, no phallic silhouette
   function drawPlayer() {
     const px = player.x;
     const py = player.y;
@@ -610,7 +621,7 @@
     // ---------- Playing ----------
     distance += speed * dt;
     const pct = Math.floor((distance / lvl.distanceTarget) * 100);
-    distancePill.textContent = clamp(pct, 0, 100) + "%";
+    distancePill.textContent = "Progress: " +clamp(pct, 0, 100) + "%";
 
     const exitStartsAt = lvl.distanceTarget - 420;
     if (distance >= exitStartsAt) 
@@ -624,7 +635,8 @@
     }
     // lane change (kid-friendly cooldown)
     player.cooldown -= dt;
-    if (player.cooldown < 0) player.cooldown = 0;
+    if (player.cooldown < 0) 
+      player.cooldown = 0;
 
     if (player.cooldown === 0) {
       if (keys.left) {
@@ -699,21 +711,21 @@
       const laneW = road.w / LANES;
       ctx.fillRect(road.x + laneW*requiredLane, 0, laneW, 260);
 
-if (distance >= lvl.distanceTarget) {
-  if (player.lane === requiredLane) {
-    nextLevelOrWin();
-  } else {
-    // ✅ Exit was truly missed (finish line reached in wrong lane)
-    missedExitLatched = true;
-    missedExitMessageTimer = 1.8;
+      if (distance >= lvl.distanceTarget) {
+        if (player.lane === requiredLane) {
+          nextLevelOrWin();
+        } else {
+          // Exit was truly missed (finish line reached in wrong lane)
+          missedExitLatched = true;
+          missedExitMessageTimer = 1.8;
 
-    // Friendly rewind so they can try again
-    distance = exitStartsAt - 120;
+          // Friendly rewind so they can try again
+          distance = exitStartsAt - 120;
 
-    beep(330, 0.10, "sine", 0.05);
-    beep(280, 0.12, "sine", 0.05);
-  }
-}
+          beep(330, 0.10, "sine", 0.05);
+          beep(280, 0.12, "sine", 0.05);
+        }
+      }
 
       if (missedExitLatched && missedExitMessageTimer > 0) {
         ctx.fillStyle = "rgba(0,0,0,0.45)";
@@ -746,8 +758,10 @@ if (distance >= lvl.distanceTarget) {
 
   canvas.addEventListener("pointerdown", () => {
     ensureAudio();
-    if (state === "title") resetLevel(0, false);
-    else if (state === "gameover") resetLevel(levelIndex, true);
+    if (state === "title") 
+      resetLevel(0, false);
+    else if (state === "gameover") 
+      resetLevel(levelIndex, true);
   });
 
   // init
