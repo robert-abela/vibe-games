@@ -106,7 +106,7 @@
   // ---------- State ----------
   let state = "title"; // title | playing | greet | gameover
   let levelIndex = 0;
-  let lastCrashType = "car"; // "car" | "police"
+  let gameOverType = "car"; // "car" | "police" | "missedExit"
 
   const player = {
     lane: 1, // starts near middle-left
@@ -218,9 +218,14 @@
     resetLevel(levelIndex, true);
   }
 
-  function gameOver(crashType) {
-    lastCrashType = crashType || "car";
+  function gameOverCrash(crashType) {
+    gameOverType = crashType || "car";
     crashSound();
+    stopSiren();
+    state = "gameover";
+  }
+  function gameOverMissedExit() {
+    gameOverType = "missedExit";
     stopSiren();
     state = "gameover";
   }
@@ -451,8 +456,8 @@
   }
 
   function drawJail(x, y) {
-    fillRoundRect(x, y, 180, 160, 16, "rgba(148,163,184,0.95)"); //building
-    fillRoundRect(x+112, y+86, 36, 70, 10, "rgba(51,65,85,0.95)"); //door
+    fillRoundRect(x, y, 180, 160, 16, "rgba(148,163,184,0.95)");    //building
+    fillRoundRect(x+112, y+86, 36, 70, 10, "rgba(51,65,85,0.95)");  //door
     fillRoundRect(x+32, y+60, 44, 30, 8, "rgba(203,213,225,0.95)"); //window
     //bars
     ctx.strokeStyle = "rgba(30,41,59,0.95)";
@@ -583,7 +588,6 @@
       requestAnimationFrame(tick);
       return;
     }
-
     if (state === "greet") {
       stopSiren();
       greetElapsed += dt;
@@ -593,22 +597,28 @@
       requestAnimationFrame(tick);
       return;
     }
-
     if (state === "gameover") {
       drawBackground();
       drawRoad(lvl, 140, dt);
       obstacles.forEach(drawObstacle);
       drawPlayer();
-
-      const crashTitle = (lastCrashType === "police") ? "Police crash!" : "Car crash!";
-      const crashSub   = (lastCrashType === "police") ? "Jail time (game over)" : "Ambulance is here!";
-      drawOverlayText(["Oh no!", crashTitle], [crashSub, "Press [Space] to try again"]);
-
-      if (lastCrashType === "police") 
+      
+      //assume missed exit by default, but change if it was actually a crash
+      gameOverTitle = "Missed Exit!";
+      gameOverSub = "You need to be quicker!";
+      
+      if (gameOverType === "police") {
+        gameOverTitle = "Police crash!";
+        gameOverSub = "Jail time (game over)";
         drawJail(W/2 - 90, 360);
-      else 
+      }
+      else if (gameOverType === "car") {
+        gameOverTitle = "Car crash!";
+        gameOverSub = "Ambulance is here!";
         drawAmbulance(W/2 - 85, 390);
-
+      }
+      
+      drawOverlayText(["Oh no!", gameOverTitle], [gameOverSub, "Press [Space] to try again"]);
       requestAnimationFrame(tick);
       return;
     }
@@ -616,9 +626,9 @@
     // ---------- Playing ----------
     distance += speed * dt;
     const pct = Math.floor((distance / lvl.distanceTarget) * 100);
-    distancePill.textContent = "Progress: " +clamp(pct, 0, 100) + "%";
+    distancePill.textContent = "Progress: " + clamp(pct, 0, 100) + "%";
 
-    const exitStartsAt = lvl.distanceTarget - 420;
+    const exitStartsAt = lvl.distanceTarget - 1000;
     if (distance >= exitStartsAt) 
       exitActive = true;
     if (missedExitMessageTimer > 0) {
@@ -679,7 +689,7 @@
     for (const o of obstacles) {
       const ob = { x:o.x+6, y:o.y+8, w:o.w-12, h:o.h-16 };
       if (rectsOverlap(hitbox, ob)) {
-        gameOver(o.type);
+        gameOverCrash(o.type);
         break;
       }
     }
@@ -704,7 +714,7 @@
       // highlight required lane near top (because ramp is up)
       ctx.fillStyle = "rgba(255, 204, 77, 0.22)";
       const laneW = road.w / LANES;
-      ctx.fillRect(road.x + laneW*requiredLane, 0, laneW, 260);
+      ctx.fillRect(road.x + laneW*requiredLane, 0, laneW, H);
 
       if (distance >= lvl.distanceTarget) {
         if (player.lane === requiredLane) {
@@ -713,10 +723,6 @@
           // Exit was truly missed (finish line reached in wrong lane)
           missedExitLatched = true;
           missedExitMessageTimer = 1.8;
-
-          // Friendly rewind so they can try again
-          distance = exitStartsAt - 120;
-
           beep(330, 0.10, "sine", 0.05);
           beep(280, 0.12, "sine", 0.05);
         }
@@ -730,6 +736,7 @@
         ctx.font = "900 22px system-ui";
         ctx.fillText("Oops! Missed the EXIT — try again!", W/2, H-82);
         ctx.textAlign = "start";
+        gameOverMissedExit();
       }
     }
 
@@ -738,26 +745,20 @@
 
   // ---------- Start ----------
   startBtn.addEventListener("click", () => {
-    ensureAudio();
-    if (state === "playing") 
-      return;
-    if (state === "gameover") { 
-      resetLevel(levelIndex, true); 
-      return; 
-    }
-    if (state === "title") { 
-      resetLevel(0, false); 
-      return; 
-    }
+    restartGame();
   });
 
   canvas.addEventListener("pointerdown", () => {
+    restartGame();
+  });
+
+  function restartGame() {
     ensureAudio();
     if (state === "title") 
       resetLevel(0, false);
     else if (state === "gameover") 
       resetLevel(levelIndex, true);
-  });
+  }
 
   // init
   levelPill.textContent = levels[0].name;
