@@ -239,7 +239,8 @@
     }
 
     function l2Update() {
-        if (L2.playerDead || L2.won) return;
+        if (L2.playerDead || L2.won) 
+            return;
         L2.flashTimer = Math.max(0, L2.flashTimer - 1);
 
         const p = l2P;
@@ -375,7 +376,15 @@
         if (p.floor === l2Classroom.floor && p.x <= l2Classroom.x + l2Classroom.w) {
             L2.won = true;
             finished = true;
-            if (!trumpetPlayed) { playTrumpet(); trumpetPlayed = true; }
+            if (!trumpetPlayed) { 
+                playTrumpet(); 
+                trumpetPlayed = true; 
+            }
+            // Start classroom scene after a short delay
+            setTimeout(() => {
+                classroomActive = true;
+                startClassroomScene();
+            }, 1200);
         }
     }
 
@@ -474,12 +483,15 @@
             const winY = roomTop + 5;
             ctx.fillStyle = '#cce8ff';
             ctx.fillRect(wx - winW/2, winY, winW, winH);
-            ctx.strokeStyle = '#90b8d8'; ctx.lineWidth = 2;
+            ctx.strokeStyle = '#90b8d8'; 
+            ctx.lineWidth = 2;
             ctx.strokeRect(wx - winW/2, winY, winW, winH);
-            ctx.strokeStyle = '#80a8c8'; ctx.lineWidth = 1;
+            ctx.strokeStyle = '#80a8c8'; 
+            ctx.lineWidth = 1;
             ctx.beginPath();
             ctx.moveTo(wx, winY); ctx.lineTo(wx, winY + winH);
-            ctx.moveTo(wx - winW/2, winY + winH/2); ctx.lineTo(wx + winW/2, winY + winH/2);
+            ctx.moveTo(wx - winW/2, winY + winH/2); 
+            ctx.lineTo(wx + winW/2, winY + winH/2);
             ctx.stroke();
 
             // Doors for this floor
@@ -497,11 +509,14 @@
                 // Small window pane on door
                 ctx.fillStyle = '#cce8ff';
                 ctx.fillRect(dx + 6, dy + 6, dw - 12, 15);
-                ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 0.5;
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)'; 
+                ctx.lineWidth = 0.5;
                 ctx.strokeRect(dx + 6, dy + 6, dw - 12, 15);
                 // Handle
                 ctx.fillStyle = '#d4b040';
-                ctx.beginPath(); ctx.arc(dx + dw - 7, dy + dh * 0.55, 3, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); 
+                ctx.arc(dx + dw - 7, dy + dh * 0.55, 3, 0, Math.PI*2); 
+                ctx.fill();
                 // Label ABOVE the frame (not on door)
                 ctx.fillStyle = '#222';
                 ctx.font = 'bold 9px sans-serif';
@@ -685,12 +700,18 @@
             ctx.fillStyle = '#8b6a3a';
             ctx.beginPath();
             ctx.moveTo(gx, gy);
-            ctx.lineTo(gx + 6, gy + 7); ctx.lineTo(gx + 2, gy + 13);
-            ctx.lineTo(gx - 4, gy); ctx.closePath(); ctx.fill();
+            ctx.lineTo(gx + 6, gy + 7); 
+            ctx.lineTo(gx + 2, gy + 13);
+            ctx.lineTo(gx - 4, gy); 
+            ctx.closePath(); 
+            ctx.fill();
             ctx.beginPath();
             ctx.moveTo(gx + gw, gy);
-            ctx.lineTo(gx + gw - 5, gy + 8); ctx.lineTo(gx + gw - 1, gy + 14);
-            ctx.lineTo(gx + gw + 4, gy); ctx.closePath(); ctx.fill();
+            ctx.lineTo(gx + gw - 5, gy + 8); 
+            ctx.lineTo(gx + gw - 1, gy + 14);
+            ctx.lineTo(gx + gw + 4, gy); 
+            ctx.closePath(); 
+            ctx.fill();
             // Warning sign above the gap
             const scx = gx + gw / 2, scy = gy - 14;
             const sh = 26, sw2 = 22;
@@ -746,27 +767,32 @@
             ctx.fillText('◀ GOAL', dx + dw / 2 + 52, dy + dh / 2 + 4);
         }
 
-        // ---- Entry arrow (ground floor, right) ----
-        if (!L2.playerDead && !L2.won && l2P.floor === 0 && l2P.x > 680) {
-            ctx.fillStyle = '#27ae60';
-            ctx.font = 'bold 12px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.fillText('← Walk left to stairs', W / 2, l2Floors[0].surfaceY - 55);
-        }
-
         // ---- Player ----
         if (!L2.playerDead) {
             const px = Math.round(p.x);
             const py = Math.round(p.y);
-            ctx.fillStyle = '#001f5b'; ctx.fillRect(px - 10, py - 18, 20, 18);
-            ctx.fillStyle = '#800000'; ctx.fillRect(px - 10, py, 20, 8);
-            ctx.fillStyle = '#ffd8b1'; ctx.beginPath(); ctx.arc(px + 2, py - 26, 10, 0, Math.PI * 2); ctx.fill();
-            ctx.fillStyle = '#6b3f2b'; ctx.fillRect(px - 8, py - 34, 24, 8);
-            ctx.fillStyle = '#800000'; ctx.fillRect(px + 12, py - 12, 10, 18);
+            ctx.fillStyle = '#001f5b'; 
+            ctx.fillRect(px - 10, py - 18, 20, 18);
+            ctx.fillStyle = '#800000'; 
+            ctx.fillRect(px - 10, py, 20, 8);
+            ctx.fillStyle = '#ffd8b1'; 
+            ctx.beginPath(); ctx.arc(px + 2, py - 26, 10, 0, Math.PI * 2); 
+            ctx.fill();
+            ctx.fillStyle = '#6b3f2b'; 
+            ctx.fillRect(px - 8, py - 34, 24, 8);
+            ctx.fillStyle = '#800000'; 
+            ctx.fillRect(px + 12, py - 12, 10, 18);
             const legSwing = Math.sin(p.walkAnim) * 0.6;
-            ctx.save(); ctx.translate(px + 2, py + 12); ctx.fillStyle = '#ffd8b1';
-            ctx.save(); ctx.translate(-8, 0); ctx.rotate(legSwing * 0.35); ctx.fillRect(-2, 0, 6, 14); ctx.restore();
-            ctx.save(); ctx.translate(8, 0); ctx.rotate(-legSwing * 0.35); ctx.fillRect(-2, 0, 6, 14); ctx.restore();
+            ctx.save(); ctx.translate(px + 2, py + 12); 
+            ctx.fillStyle = '#ffd8b1';
+            ctx.save(); ctx.translate(-8, 0); 
+            ctx.rotate(legSwing * 0.35); 
+            ctx.fillRect(-2, 0, 6, 14); 
+            ctx.restore();
+            ctx.save(); ctx.translate(8, 0); 
+            ctx.rotate(-legSwing * 0.35); 
+            ctx.fillRect(-2, 0, 6, 14); 
+            ctx.restore();
             ctx.restore();
         }
 
@@ -776,10 +802,10 @@
         ctx.fillStyle = '#f0e8d8';
         ctx.font = 'bold 13px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('Level 2 — Get to classroom  year3.3  on Floor 2!', 10, 22);
+        ctx.fillText('Level 2 — Get to classroom year3.3 on Floor 2!', 10, 22);
         ctx.textAlign = 'right';
         ctx.fillStyle = '#f1c40f';
-        ctx.fillText('← → move  |  [Space] use stairs  |  Avoid gaps & wet floor!', W - 10, 22);
+        ctx.fillText('← → move  |  [Space] use stairs  |  Avoid the gaps !', W - 10, 22);
 
         // ---- Game Over overlay ----
         if (L2.playerDead) {
@@ -794,7 +820,7 @@
             ctx.fillText(L2.deathReason, W / 2, H / 2 + 8);
             ctx.fillStyle = '#aaa';
             ctx.font = '13px sans-serif';
-            ctx.fillText('Press  [Space]  to try Level 2 again', W / 2, H / 2 + 38);
+            ctx.fillText('Press [Space] to try Level 2 again', W / 2, H / 2 + 38);
         }
 
         // ---- Win overlay ----
@@ -810,11 +836,235 @@
             ctx.fillText('You reached Year 3.3 — well done!', W / 2, H / 2 + 10);
             ctx.fillStyle = '#aaa';
             ctx.font = '13px sans-serif';
-            ctx.fillText('Refresh to play again', W / 2, H / 2 + 40);
+            ctx.fillText('Prepare for your lessons!', W / 2, H / 2 + 40);
         }
     }
 
     // ===================== END LEVEL 2 =====================
+
+    // ===================== CLASSROOM SCENE & QUIZ =====================
+    let classroomActive = false;
+    let quizActive = false;
+    let quiz = null;
+    let quizResult = null;
+    let quizSelected = -1;
+    let quizAnswered = false;
+    let quizOptions = [];
+    let quizTeacherMsg = '';
+
+    function startClassroomScene() {
+        classroomActive = true;
+        quizActive = false;
+        quizResult = null;
+        quizSelected = -1;
+        quizAnswered = false;
+        quizTeacherMsg = '';
+        setTimeout(() => {
+            quizTeacherMsg = 'There is a test!';
+            setTimeout(() => {
+                startQuiz();
+            }, 1200);
+        }, 1200);
+    }
+
+    function startQuiz() {
+        quizActive = true;
+        quiz = generateQuiz();
+        quizOptions = shuffle([quiz.answer, quiz.wrong1, quiz.wrong2]);
+        quizSelected = 0;
+        quizAnswered = false;
+    }
+
+    function generateQuiz() {
+        // Simple math for 7-year-olds: addition, subtraction, small multiplication
+        const types = ['add', 'sub', 'mul'];
+        const type = types[Math.floor(Math.random() * types.length)];
+        let a, b, answer, wrong1, wrong2, text;
+        if (type === 'add') {
+            a = Math.floor(Math.random() * 8) + 2; // 2-9
+            b = Math.floor(Math.random() * 8) + 1; // 1-8
+            answer = a + b;
+            text = `${a} + ${b} = ?`;
+            wrong1 = answer + (Math.random() < 0.5 ? 1 : -1);
+            wrong2 = answer + (Math.random() < 0.5 ? 2 : -2);
+        } else if (type === 'sub') {
+            a = Math.floor(Math.random() * 8) + 6; // 6-13
+            b = Math.floor(Math.random() * 6) + 1; // 1-6
+            answer = a - b;
+            text = `${a} - ${b} = ?`;
+            wrong1 = answer + 1;
+            wrong2 = answer - 1;
+        } else {
+            a = Math.floor(Math.random() * 4) + 2; // 2-5
+            b = Math.floor(Math.random() * 3) + 2; // 2-4
+            answer = a * b;
+            text = `${a} × ${b} = ?`;
+            wrong1 = answer + (Math.random() < 0.5 ? 2 : -2);
+            wrong2 = answer + (Math.random() < 0.5 ? 1 : -1);
+        }
+        // Ensure wrong answers are not equal to answer
+        if (wrong1 === answer) wrong1++;
+        if (wrong2 === answer || wrong2 === wrong1) wrong2++;
+        return { text, answer, wrong1, wrong2 };
+    }
+
+    function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function drawClassroomScene() {
+        // Background: classroom wall
+        ctx.fillStyle = '#e6e2d3';
+        ctx.fillRect(0, 0, W, H);
+        // Floor
+        ctx.fillStyle = '#c2b280';
+        ctx.fillRect(0, H - 90, W, 90);
+        // Teacher desk (front)
+        ctx.fillStyle = '#b97a56';
+        ctx.fillRect(W/2 - 80, 110, 160, 36);
+        // Teacher (simple stick figure)
+        ctx.save();
+        ctx.translate(W/2, 110);
+        ctx.fillStyle = '#ffd8b1';
+        ctx.beginPath(); 
+        ctx.arc(0, -22, 18, 0, Math.PI*2); 
+        ctx.fill(); // head
+        ctx.strokeStyle = '#333'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(0, 32); ctx.stroke(); // body
+        ctx.beginPath(); ctx.moveTo(0, 10); ctx.lineTo(-18, 28); ctx.stroke(); // left leg
+        ctx.beginPath(); ctx.moveTo(0, 10); ctx.lineTo(18, 28); ctx.stroke(); // right leg
+        ctx.beginPath(); ctx.moveTo(0, 8); ctx.lineTo(-18, -8); ctx.stroke(); // left arm
+        ctx.beginPath(); ctx.moveTo(0, 8); ctx.lineTo(18, -8); ctx.stroke(); // right arm
+        ctx.restore();
+        // Blackboard
+        ctx.fillStyle = '#223a1a';
+        ctx.fillRect(W/2 - 120, 40, 240, 48);
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 22px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Year 3.3', W/2, 72);
+        // Student desks (rows) and students
+        for (let r = 0; r < 2; r++) {
+            for (let c = 0; c < 4; c++) {
+                const dx = 90 + c * 110;
+                const dy = 220 + r * 60;
+                ctx.fillStyle = '#b97a56';
+                ctx.fillRect(dx, dy, 80, 24);
+                // Draw student at desk
+                ctx.save();
+                ctx.translate(dx + 40, dy);
+                // Player sits at front row, center (r=0, c=1 or c=2 for center)
+                if (r === 0 && (c === 1 || c === 2)) {
+                    if (c === 1 && W/2 < 90 + 2 * 110) {
+                        // left center, skip (player at right center)
+                    } else if (c === 2 && W/2 > 90 + 2 * 110) {
+                        // right center, skip
+                    } else {
+                        // Draw player at center desk
+                        ctx.fillStyle = '#001f5b'; 
+                        ctx.fillRect(-14, 0, 28, 22); // body
+                        ctx.fillStyle = '#ffd8b1'; 
+                        ctx.beginPath(); 
+                        ctx.arc(0, -12, 12, 0, Math.PI*2); 
+                        ctx.fill(); // head
+                        ctx.fillStyle = '#6b3f2b'; 
+                        ctx.fillRect(-10, -22, 20, 8); // hair
+                    }
+                } else {
+                    // Other students (random colors)
+                    const colors = ['#e67e22','#16a085','#2980b9','#8e44ad','#c0392b','#f39c12','#2ecc71','#34495e'];
+                    ctx.fillStyle = colors[(r*4+c)%colors.length];
+                    ctx.fillRect(-14, 0, 28, 22); // body
+                    ctx.fillStyle = '#ffd8b1'; 
+                    ctx.beginPath(); 
+                    ctx.arc(0, -12, 12, 0, Math.PI*2);
+                    ctx.fill(); // head
+                    ctx.fillStyle = '#6b3f2b'; 
+                    ctx.fillRect(-10, -22, 20, 8); // hair
+                }
+                ctx.restore();
+            }
+        }
+
+        // Teacher message
+        if (quizTeacherMsg) {
+            ctx.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx.fillRect(W/2 - 120, 160, 240, 44);
+            ctx.strokeStyle = '#888'; 
+            ctx.strokeRect(W/2 - 120, 160, 240, 44);
+            ctx.fillStyle = '#222';
+            ctx.font = 'bold 18px sans-serif';
+            ctx.fillText(quizTeacherMsg, W/2, 188);
+        }
+
+        // Quiz
+        if (quizActive && quiz) {
+            ctx.fillStyle = 'rgba(255,255,255,0.98)';
+            ctx.fillRect(W/2 - 140, 180, 280, 185);
+            ctx.strokeStyle = '#888'; 
+            ctx.strokeRect(W/2 - 140, 180, 280, 185);
+            ctx.fillStyle = '#222';
+            ctx.font = 'bold 20px sans-serif';
+            ctx.fillText('Test: ' + quiz.text, W/2, 210);
+            for (let i = 0; i < 3; i++) {
+                ctx.fillStyle = quizSelected === i ? '#f1c40f' : '#e0e0e0';
+                ctx.fillRect(W/2 - 100, 235 + i*38, 200, 32);
+                ctx.strokeStyle = '#888'; 
+                ctx.strokeRect(W/2 - 100, 235 + i*38, 200, 32);
+                ctx.fillStyle = '#222';
+                ctx.font = 'bold 18px sans-serif';
+                ctx.fillText(quizOptions[i], W/2, 258 + i*38);
+            }
+        }
+    }
+
+    let endScreenActive = false;
+    let endScreenResult = null;
+    function handleQuizInput(e) {
+        if (!quizActive || quizAnswered) return;
+        if (e.key === 'ArrowUp') {
+            quizSelected = (quizSelected + 2) % 3;
+        } else if (e.key === 'ArrowDown') {
+            quizSelected = (quizSelected + 1) % 3;
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            if (quizSelected >= 0) {
+                quizAnswered = true;
+                if (quizOptions[quizSelected] === quiz.answer) {
+                    quizResult = 'win';
+                } else {
+                    quizResult = 'lose';
+                }
+                setTimeout(() => {
+                    classroomActive = false;
+                    endScreenActive = true;
+                    endScreenResult = quizResult;
+                }, 1800);
+            }
+        }
+    }
+
+    window.addEventListener('keydown', function(e) {
+        if (classroomActive && quizActive) 
+            handleQuizInput(e);
+    });
+
+    function drawEndScreen() {
+        ctx.fillStyle = endScreenResult === 'win' ? '#d4f7d4' : '#fbeaea';
+        ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#222';
+        ctx.font = 'bold 38px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(endScreenResult === 'win' ? 'You Win!' : 'Try Again!', W/2, H/2 - 30);
+        ctx.font = '22px sans-serif';
+        ctx.fillText(endScreenResult === 'win' ? 'You passed the test and finished the game!' : 'You did not pass the test.', W/2, H/2 + 10);
+        ctx.font = '16px sans-serif';
+        ctx.fillStyle = '#888';
+        ctx.fillText('Refresh to play again.', W/2, H/2 + 50);
+    }
 
     // Audio (simple beeps)
     let audioCtx = null; 
@@ -1120,7 +1370,8 @@
     function draw() {
         ctx.clearRect(0, 0, W, H);
         // sky
-        ctx.fillStyle = '#d7f0d7'; ctx.fillRect(0, 0, W, world.groundY - 120);
+        ctx.fillStyle = '#d7f0d7'; 
+        ctx.fillRect(0, 0, W, world.groundY - 120);
 
         // distant buildings (parallax)
         const cityParallax = cameraX * 0.25;
@@ -1130,9 +1381,12 @@
             const bxScreen = Math.round(bx - cityParallax);
             const byTop = Math.round(world.groundY - 40 - bh);
             // skip off-screen clusters for performance
-            if (bxScreen + bW < -100 || bxScreen > W + 100) continue;
+            if (bxScreen + bW < -100 || bxScreen > W + 100) 
+                continue;
             // building body
-            const colors = ['#b3cde0', '#c7d7b9', '#d3b6c6', '#cfcfcf']; ctx.fillStyle = colors[idx % colors.length]; ctx.fillRect(bxScreen, byTop, bW, bh);
+            const colors = ['#b3cde0', '#c7d7b9', '#d3b6c6', '#cfcfcf']; 
+            ctx.fillStyle = colors[idx % colors.length]; 
+            ctx.fillRect(bxScreen, byTop, bW, bh);
             // windows
             ctx.fillStyle = '#ffee88';
             const cols = 3, rows = Math.max(2, Math.floor(bh / 28));
@@ -1151,16 +1405,27 @@
             const txScreen = Math.round(tx - treeParallax);
             if (txScreen < -80 || txScreen > W + 80) continue;
             // trunk
-            const trunkH = 20; ctx.fillStyle = '#7b5a2a'; ctx.fillRect(txScreen + 8, world.groundY - 26, 8, trunkH);
+            const trunkH = 20; 
+            ctx.fillStyle = '#7b5a2a'; 
+            ctx.fillRect(txScreen + 8, world.groundY - 26, 8, trunkH);
             // foliage
-            ctx.fillStyle = '#2f8b3b'; ctx.beginPath(); ctx.arc(txScreen + 12, world.groundY - 34, 18, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(txScreen - 2, world.groundY - 22, 14, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(txScreen + 26, world.groundY - 22, 14, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#2f8b3b'; 
+            ctx.beginPath(); 
+            ctx.arc(txScreen + 12, world.groundY - 34, 18, 0, Math.PI * 2); 
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(txScreen - 2, world.groundY - 22, 14, 0, Math.PI * 2); 
+            ctx.fill();
+            ctx.beginPath(); 
+            ctx.arc(txScreen + 26, world.groundY - 22, 14, 0, Math.PI * 2); 
+            ctx.fill();
         }
 
         // ground and road
-        ctx.fillStyle = '#6aa84f'; ctx.fillRect(0, world.groundY, W, H - world.groundY);
-        ctx.fillStyle = '#7f7f7f'; ctx.fillRect(0, world.groundY + 22, W, 28);
+        ctx.fillStyle = '#6aa84f'; 
+        ctx.fillRect(0, world.groundY, W, H - world.groundY);
+        ctx.fillStyle = '#7f7f7f'; 
+        ctx.fillRect(0, world.groundY + 22, W, 28);
 
         // Draw traffic cars (behind bus and player)
         for (const car of trafficCars) {
@@ -1175,8 +1440,10 @@
             ctx.fillRect(cx + 8, cy + 5, car.w - 16, car.h / 2 - 2);
             // wheels
             ctx.fillStyle = '#222';
-            ctx.beginPath(); ctx.arc(cx + 18, cy + car.h, 10, 0, Math.PI * 2); ctx.fill();
-            ctx.beginPath(); ctx.arc(cx + car.w - 18, cy + car.h, 10, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(cx + 18, cy + car.h, 10, 0, Math.PI * 2); 
+            ctx.fill();
+            ctx.beginPath(); ctx.arc(cx + car.w - 18, cy + car.h, 10, 0, Math.PI * 2); 
+            ctx.fill();
             ctx.restore();
         }
 
@@ -1222,9 +1489,12 @@
         // Draw the bus and player first
         // ...existing code for bus drawing...
         const bx = Math.round(bus.x - cameraX), by = Math.round(bus.y);
-        ctx.fillStyle = bus.color; ctx.fillRect(bx, by - bus.height / 2, bus.width, bus.height);
-        ctx.fillStyle = bus.stripe; ctx.fillRect(bx, by - bus.height / 2 + Math.round(bus.height * 0.18), bus.width, Math.round(bus.height * 0.16));
-        ctx.fillStyle = '#333'; ctx.fillRect(bx, by - 6, bus.width, 6);
+        ctx.fillStyle = bus.color; 
+        ctx.fillRect(bx, by - bus.height / 2, bus.width, bus.height);
+        ctx.fillStyle = bus.stripe; 
+        ctx.fillRect(bx, by - bus.height / 2 + Math.round(bus.height * 0.18), bus.width, Math.round(bus.height * 0.16));
+        ctx.fillStyle = '#333'; 
+        ctx.fillRect(bx, by - 6, bus.width, 6);
         // windows (computed to fit smaller bus)
         ctx.fillStyle = '#77aaff';
         const winW = Math.max(28, Math.round(bus.width * 0.13));
@@ -1242,7 +1512,8 @@
         ctx.fillStyle = '#222'; 
         ctx.beginPath(); 
         ctx.arc(bx + 24, wheelCY, bus.wheelRadius, 0, Math.PI * 2); 
-        ctx.fill(); ctx.beginPath(); 
+        ctx.fill(); 
+        ctx.beginPath(); 
         ctx.arc(bx + bus.width - 34, wheelCY, bus.wheelRadius, 0, Math.PI * 2); 
         ctx.fill();
         // door animation (slides right when opening)
@@ -1276,7 +1547,9 @@
         ctx.restore();
 
         // prompts
-        ctx.textAlign = 'center'; ctx.fillStyle = '#111'; ctx.font = '16px sans-serif';
+        ctx.textAlign = 'center'; 
+        ctx.fillStyle = '#111'; 
+        ctx.font = '16px sans-serif';
         if (state === 'startPrompt') {
             ctx.fillStyle = 'rgba(255,255,255,0.85)';
             ctx.fillRect(0, 0, W, H);
@@ -1286,8 +1559,10 @@
             ctx.font = '16px sans-serif';
             ctx.fillText('Use arrow keys to move', W / 2, H / 2 + 32);
         }
-        if (state === 'waitingBoard') ctx.fillText('Press [Space] to board', W / 2, 40);
-        if (state === 'waitingExit') ctx.fillText('Press [Space] to exit the bus', W / 2, 40);
+        if (state === 'waitingBoard') 
+            ctx.fillText('Press [Space] to board', W / 2, 40);
+        if (state === 'waitingExit') 
+            ctx.fillText('Press [Space] to exit the bus', W / 2, 40);
         
         if (finished) { 
             ctx.fillStyle = 'rgba(0,0,0,0.5)'; 
@@ -1314,7 +1589,11 @@
             input.jumpPressed = false;
             l2Init();
         }
-        if (L2.active) {
+        if (endScreenActive) {
+            drawEndScreen();
+        } else if (classroomActive) {
+            drawClassroomScene();
+        } else if (L2.active) {
             l2Update();
             l2Draw();
         } else {
