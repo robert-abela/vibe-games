@@ -1,1 +1,1 @@
-Play at https://robert-abela.github.io/vibe-games
+Play at: https://robert-abela.github.io/vibe-games
