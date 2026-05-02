@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pick-a-Number Challenge Game</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Confetti canvas overlay -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+
+  <main class="app" aria-live="polite">
+    <header class="header">
+      <div class="badge">🎲</div>
+      <h1>Pick‑a‑Number Challenge!</h1>
+      <p class="subtitle">Start → Choose → Pick a number → Do a fun challenge!</p>
+    </header>
+
+    <!-- STEP 1: START -->
+    <section id="stepStart" class="card step">
+      <h2>Ready to play?</h2>
+      <p class="hint">Press the big button to begin!</p>
+
+      <button id="btnStart" class="btn btn-big" type="button">
+        ▶ Start Game
+      </button>
+
+      <div class="controlsRow">
+        <button id="btnSoundToggle" class="btn btn-ghost" type="button" aria-label="Toggle sound">
+          🔊 Sound: ON
+        </button>
+      </div>
+    </section>
+
+    <!-- STEP 2: NAME -->
+    <section id="stepName" class="card step hidden">
+      <h2>What’s your name?</h2>
+      <p class="hint">Type your name (or leave it blank).</p>
+
+      <div class="nameRow">
+        <label class="srOnly" for="playerName">Player name</label>
+        <input id="playerName" class="nameInput" type="text" maxlength="16" placeholder="e.g. Alex" />
+        <button id="btnNameNext" class="btn" type="button">Continue ➜</button>
+      </div>
+
+      <p class="tiny">Tip: Keep it short so it fits nicely 😊</p>
+    </section>
+
+    <!-- STEP 3: CHOOSE -->
+    <section id="stepChoose" class="card step hidden">
+      <h2 id="chooseTitle">Are you a boy or a girl?</h2>
+      <p class="hint">Pick one for this round.</p>
+
+      <div class="row">
+        <button id="btnBoy" class="btn btn-choice" type="button" aria-label="Choose boy">
+          🧢 Boy
+        </button>
+        <button id="btnGirl" class="btn btn-choice" type="button" aria-label="Choose girl">
+          🎀 Girl
+        </button>
+      </div>
+
+      <p class="tiny">(It’s okay—just pick whichever you want today.)</p>
+    </section>
+
+    <!-- STEP 4: PICK NUMBER -->
+    <section id="stepNumbers" class="card step hidden">
+      <h2 id="numbersTitle">Pick a number!</h2>
+      <p class="hint">Tap a number from <strong>1</strong> to <strong>10</strong>.</p>
+
+      <div class="optionsBar">
+        <button id="btnResetNumbers" class="btn btn-ghost" type="button">
+          ♻ Reset numbers
+        </button>
+      </div>
+
+      <div id="numberGrid" class="grid" role="group" aria-label="Number choices"></div>
+
+      <button id="btnBackToChoose" class="btn btn-ghost" type="button">
+        ← Change boy/girl
+      </button>
+    </section>
+
+    <!-- STEP 5: RESULT -->
+    <section id="stepResult" class="card step hidden">
+      <h2 id="resultTitle">Your Challenge</h2>
+
+      <div class="resultBox" role="status">
+        <div id="resultEmoji" class="resultEmoji">⭐</div>
+        <p id="resultText" class="resultText">Challenge goes here…</p>
+      </div>
+
+      <div class="row">
+        <button id="btnAnother" class="btn" type="button">🎲 Pick another number</button>
+        <button id="btnRestart" class="btn btn-ghost" type="button">🔁 Restart</button>
+      </div>
+
+      <p class="tiny" id="pickedInfo"></p>
+      <p class="tiny" id="repeatInfo"></p>
+    </section>
+
+    <footer class="footer">
+      <p>Made for kids — simple, friendly, and fun 🌈</p>
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
